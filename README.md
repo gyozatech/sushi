@@ -86,7 +86,7 @@ It takes advantage of both `Function` and `Either` types.
 
 ```go
 import (
-    "github.com/gyozatch/sushi/functional"
+    "github.com/gyozatech/sushi/functional"
 )
 ```
 

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gyozatch/sushi/functional"
+	"github.com/gyozatech/sushi/functional"
 )
 
 func TestForEach(t *testing.T) {

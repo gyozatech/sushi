@@ -1,3 +1,3 @@
-module github.com/gyozatch/sushi
+module github.com/gyozatech/sushi
 
 go 1.19
