@@ -1,9 +1,5 @@
 package utils
 
-import (
-	"github.com/gyozatech/sushi/functional"
-)
-
 // Contains searches if an element is present in a slice
 func Contains[T comparable](slice []T, element T) bool {
 	if len(slice) == 0 {
@@ -60,17 +56,4 @@ func RemoveEmptyValueInSlice[T comparable](slice []T) []T {
 		}
 	}
 	return result
-}
-
-// ForEach allows to apply a transformation function over a slice
-func ForEach[T any, V any](slice []T, f functional.Function[T, V]) ([]V, error) {
-	newSlice := []V{}
-	for _, t := range slice {
-		if v, err := f(t); err != nil {
-			return nil, err
-		} else {
-			newSlice = append(newSlice, *v)
-		}
-	}
-	return newSlice, nil
 }

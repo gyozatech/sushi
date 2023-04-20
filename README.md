@@ -210,7 +210,6 @@ func LetsTry() error {
 Allows you to apply a mutator over a slice
 ```go
 import (
-    "github.com/gyozatech/sushi/utils"
     "github.com/gyozatech/sushi/functional"
     "fmt"
 )
@@ -234,7 +233,7 @@ func LetsTry() {
 	     return &DB{ Type: split[0], Version: split[1] }, nil
 	}
 	// apply mutator to every element of the initial slice with ForEach
-	databases, err := ForEach(dbCodes, fetchDBFromCode)
+	databases, err := functional.ForEach(dbCodes, fetchDBFromCode)
 	if err != nil {
 	    fmt.Printf("Error: %s \n", err.Error())
 	} else {

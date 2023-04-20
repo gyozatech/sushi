@@ -1,11 +1,10 @@
-package utils
+package functional
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
-
-	"github.com/gyozatech/sushi/functional"
 )
 
 func TestForEach(t *testing.T) {
@@ -16,7 +15,7 @@ func TestForEach(t *testing.T) {
 		Version string
 	}
 
-	var fetchDBFromCode functional.Function[string, DB] = func(dbCode string) (*DB, error) {
+	var fetchDBFromCode Function[string, DB] = func(dbCode string) (*DB, error) {
 		split := strings.Split(dbCode, "-")
 		if len(split) != 2 {
 			return nil, fmt.Errorf("invalid DB version provided %s", dbCode)
@@ -73,11 +72,11 @@ func TestForEach(t *testing.T) {
 		},
 	}
 	for _, testCase := range testCases {
-		actualSlice, actualErr := ForEach[string, DB](testCase.input, fetchDBFromCode)
-		if !IsEqual(testCase.expectedSlice, actualSlice) {
+		actualSlice, actualErr := ForEach(testCase.input, fetchDBFromCode)
+		if !reflect.DeepEqual(testCase.expectedSlice, actualSlice) {
 			t.Errorf("%s failed (%s), expected slice %+v got %+v", testName, testCase.description, testCase.expectedSlice, actualSlice)
 		}
-		if !IsEqual(testCase.expectedErr, actualErr) {
+		if actualErr != nil && testCase.expectedErr.Error() != actualErr.Error() {
 			t.Errorf("%s failed (%s), expected err %s got %s", testName, testCase.description, testCase.expectedErr, actualErr)
 		}
 	}
