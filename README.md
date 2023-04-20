@@ -192,6 +192,7 @@ Allows you to collect all results of a function in a slice:
 ```go
 import (
     "github.com/gyozatech/sushi/utils"
+    "fmt"
 )
 
 func GetUser(id string) (email string, subscribed bool, age int, err error) {
@@ -203,4 +204,42 @@ func LetsTry() error {
     age := CollectResults(GetUser("12345"))[2]
     fmt.Println("Age:", age)
 }
+```
+
+### `ForEach`
+Allows you to apply a mutator over a slice
+```go
+import (
+    "github.com/gyozatech/sushi/utils"
+    "github.com/gyozatech/sushi/functional"
+    "fmt"
+)
+
+func LetsTry() {
+    // output type
+    type DB struct {
+	    Type string
+	    Version string
+	}
+	
+    // input slice
+	dbCodes := []string{"mysql-v8.5.6", "postgres-v5.3.1", "postgres-v4.2.4", "mysql-v11.2.3"}
+
+    // mutator function from string to DB
+    var fetchDBFromCode functional.Function[string, DB] = func(dbCode string) (*DB, error) {
+	     split := strings.Split(dbCode, "-")
+	     if len(split) != 2 {
+	         return nil, fmt.Errorf("invalid DB version provided %s", dbCode)
+	     }
+	     return &DB{ Type: split[0], Version: split[1] }, nil
+	}
+	// apply mutator to every element of the initial slice with ForEach
+	databases, err := ForEach(dbCodes, fetchDBFromCode)
+	if err != nil {
+	    fmt.Printf("Error: %s \n", err.Error())
+	} else {
+	    fmt.Printf("%+v \n", databases)
+	}
+}
+
 ```
