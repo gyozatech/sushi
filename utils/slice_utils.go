@@ -1,5 +1,7 @@
 package utils
 
+import "reflect"
+
 // Contains searches if an element is present in a slice
 func Contains[T comparable](slice []T, element T) bool {
 	if len(slice) == 0 {
@@ -53,6 +55,27 @@ func RemoveEmptyValueInSlice[T comparable](slice []T) []T {
 	for _, value := range slice {
 		if !reflect.DeepEqual(value, reflect.Zero(reflect.TypeOf(value)).Interface()) {
 			result = append(result, value)
+		}
+	}
+	return result
+}
+
+// FindOne filters a slice finding one element given a condition
+func FindOne[T any](slice []T, where func(t T) bool) *T {
+	for _, item := range slice {
+		if where(item) {
+			return &item
+		}
+	}
+	return nil
+}
+
+// FindMany filters a slice finding all the element which verify a given condition
+func FindMany[T any](slice []T, where func(t T) bool) []T {
+	result := []T{}
+	for _, item := range slice {
+		if where(item) {
+			result = append(result, item)
 		}
 	}
 	return result

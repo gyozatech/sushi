@@ -242,3 +242,45 @@ func LetsTry() {
 }
 
 ```
+
+### `FindOne` and `FindMany`
+
+These two functions allow filtering a slice through a condition:
+```go
+import (
+    "github.com/gyozatech/sushi/utils"
+)
+
+func LetsTry() {
+
+    type Book struct {
+        ID int
+        Title string
+        Author string
+    }
+
+    books := []Book{
+        {ID: 1, Title: "Jurassic Park", Author: "Michael Chricton"},
+        {ID: 2, Title: "The Lost World", Author: "Michael Chricton"},
+        {ID: 3, Title: "Relic", Author: "Preston & Child"},
+    }
+
+    jkBook := utils.FindOne(books, func(b Book) bool{
+        if b.Title == "Jurassic Park" {
+            return true
+        }
+        return false
+    })
+
+    chrictonBooks := utils.FindMany(books, func(b Book) bool{
+        if b.Author == "Michael Chricton" {
+            return true
+        }
+        return false
+    })
+
+    _ = jkBook
+    _ = chrictonBooks
+
+}
+```
