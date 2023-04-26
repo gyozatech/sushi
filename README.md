@@ -266,17 +266,11 @@ func LetsTry() {
     }
 
     jkBook := utils.FindOne(books, func(b Book) bool{
-        if b.Title == "Jurassic Park" {
-            return true
-        }
-        return false
+        return b.Title == "Jurassic Park"
     })
 
     chrictonBooks := utils.FindMany(books, func(b Book) bool{
-        if b.Author == "Michael Chricton" {
-            return true
-        }
-        return false
+        return b.Author == "Michael Chricton"
     })
 
     _ = jkBook
