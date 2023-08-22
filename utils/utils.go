@@ -8,11 +8,20 @@ import (
 
 // RandomString generates random string of given lenght
 func RandomString(length int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+	return RandomStringFrom("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", length)
+}
 
+// RandomPassword generate a random password given the desired length
+func RandomPassword(length int) string {
+	return RandomStringFrom("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{};:',.<>?/", length)
+}
+
+// RandomStringFrom generate a random string given the set of characters and the desired length
+func RandomStringFrom(charset string, length int) string {
+	var characters = []rune(charset)
 	str := make([]rune, length)
 	for i := range str {
-		str[i] = letters[rand.Intn(len(letters))]
+		str[i] = characters[mrand.Intn(len(characters))]
 	}
 	return string(str)
 }
