@@ -39,3 +39,8 @@ func IsEqual(a, b interface{}) bool {
 func CollectResults(results ...interface{}) []interface{} {
 	return results
 }
+
+// IsZero returns true if the given comparable is a zero value object or empty struct
+func IsZero[T comparable](v T) bool {
+	return v == *new(T)
+}
