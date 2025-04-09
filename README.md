@@ -278,3 +278,47 @@ func LetsTry() {
 
 }
 ```
+
+## SQL utils: the Transactor
+
+Credits to https://github.com/giornetta for the implementation.
+
+The `sql.Transactor` interface brings transactions at the level of services, committing all the SQL queries performed `WithinTransaction` of rollbacking.
+It's using the `context.Context` to pass a DB transaction across multiple services or DAOs.
+
+Here is an example:
+
+```go
+import sqlutil "github.com/gyozatech/sushi/sql"
+
+func (cs *ChartServiceImpl) Checkout(ctx context.Context, chart model.Chart, optins model.Optins) error {
+
+    cs.transactor.WithinTransaction(ctx, func(txCtx context.Context) error {
+
+        // a transaction object is fetched from the ctx if present, else it's created and added to the context
+
+        if err := cs.ChartDao.FlagChart(ctx, chart.ID, "checked"); err != nil {
+            return err // this will cause a rollback
+        }
+        if err := cs.ItemService.ReduceAvailability(ctx, chart.ItemIDs); err != nil {
+            return err // this will cause a rollback
+        }
+        if err := cs.CheckOptinFlags(ctx, optins); err != nil {
+            return err // this will cause a rollback
+        }
+        
+        return nil // this will cause a commit if the transaction has started in this `WithinTransaction` function, else not
+    })
+}
+```
+To make it possible, the DAO layers (interacting with the DB directly), should be adapted to reuse an existing transaction if present in the ctx or to use the DB directly:
+```go
+import sqlutil "github.com/gyozatech/sushi/sql"
+
+func (dao *ChartDaoImpl) FlagChart(ctx context.Context, id, flag string) error {
+    query := "UPDATE charts SET flag = $1 where id = $2"
+    // instead of having: dao.DB.ExecContext(ctx, query, flag, id)
+    _, err := sqlutil.Executor(ctx, dao.DB).ExecContext(ctx, query, flag, id)
+    return err
+}
+```

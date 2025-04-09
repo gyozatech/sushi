@@ -2,7 +2,7 @@ package utils
 
 import (
 	"encoding/json"
-	"math/rand"
+	mrand "math/rand"
 	"strings"
 )
 
