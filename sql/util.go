@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-
-	"github.com/jmoiron/sqlx"
 )
 
 var ErrTxNotFound = fmt.Errorf("transaction value not found")
@@ -29,11 +27,21 @@ func TxFromContext(ctx context.Context) (*sql.Tx, error) {
 	return tx, nil
 }
 
-// Executor returns a *sql.Tx or *sqlx.DB to execute a DB command based on the given context.
-func Executor(ctx context.Context, db *sqlx.DB) sqlx.ExecerContext {
+// DB interface contains the common methods between sql.DB and sql.Tx objects
+type DB interface {
+	Exec(query string, args ...any) (sql.Result, error)
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
+	PrepareContext(ctx context.Context, query string) (*sql.Stmt, error)
+	Query(query string, args ...any) (*sql.Rows, error)
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+	QueryRow(query string, args ...any) *sql.Row
+	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+}
+
+// Executor returns a DbOrTx (either *sql.Tx or *sql.DB) to execute a DB command based on the given context.
+func Executor(ctx context.Context, db *sql.DB) DB {
 	if tx, ok := ctx.Value(txSessionKey).(*sql.Tx); ok {
 		return tx
 	}
-
 	return db
 }
