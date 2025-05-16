@@ -2,8 +2,7 @@ package sql
 
 import (
 	"context"
-
-	"github.com/jmoiron/sqlx"
+	"database/sql"
 )
 
 /*
@@ -21,11 +20,11 @@ type Transactor interface {
 type TransactorImpl struct {
 	// // Convert it to a *sqlx.DB = sqlx.NewDb(standardDB, "postgres")
 	// vice versa: standardDB := xdb.DB
-	db *sqlx.DB
+	db *sql.DB
 }
 
 // NewTransactor creates a new SQL transactor
-func NewTransactor(db *sqlx.DB) Transactor {
+func NewTransactor(db *sql.DB) Transactor {
 	return &TransactorImpl{
 		db: db,
 	}
